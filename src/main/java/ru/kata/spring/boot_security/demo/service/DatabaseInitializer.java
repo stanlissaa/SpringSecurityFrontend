@@ -1,19 +1,20 @@
 package ru.kata.spring.boot_security.demo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.dao.RoleDao;
 import ru.kata.spring.boot_security.demo.dao.UserDao;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 
-import javax.annotation.PostConstruct;
-import javax.transaction.Transactional;
 import java.util.Set;
 
 @Component
-public class DatabaseInitializer {
+public class DatabaseInitializer implements ApplicationRunner {
 
     private final UserDao userDao;
     private final RoleDao roleDao;
@@ -25,11 +26,9 @@ public class DatabaseInitializer {
         this.roleDao = roleDao;
         this.passwordEncoder = passwordEncoder;
     }
-
-    @PostConstruct
+    @Override
     @Transactional
-    public void init() {
-
+    public void run(ApplicationArguments args) {
         Role userRole = roleDao.findByName("ROLE_USER");
         if (userRole == null) {
             userRole = new Role("ROLE_USER");

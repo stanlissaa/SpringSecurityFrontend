@@ -1,16 +1,17 @@
 package ru.kata.spring.boot_security.demo.dao;
 
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Repository;
 import ru.kata.spring.boot_security.demo.model.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import javax.transaction.Transactional;
+
 import java.util.List;
 
 @Repository
-public class UserDaoImpl implements UserDao{
+public class UserDaoImpl implements UserDao {
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -19,19 +20,23 @@ public class UserDaoImpl implements UserDao{
     public void add(User user) {
         entityManager.persist(user);
     }
+
     @Override
     public List<User> listUsers() {
         TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User u", User.class);
         return query.getResultList();
     }
+
     @Override
     public User getUserById(Long id) {
         return entityManager.find(User.class, id);
     }
+
     @Override
     public void update(User user) {
         entityManager.merge(user);
     }
+
     @Override
     public void delete(Long id) {
         User user = entityManager.find(User.class, id);
@@ -39,10 +44,10 @@ public class UserDaoImpl implements UserDao{
             entityManager.remove(user);
         }
     }
+
     @Override
     public User findByEmail(String email) {
-        try {
-            return entityManager.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
+        try { return entityManager.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
                     .setParameter("email", email)
                     .getSingleResult();
         } catch (javax.persistence.NoResultException e) {
