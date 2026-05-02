@@ -3,9 +3,7 @@ package ru.kata.spring.boot_security.demo.model;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -31,12 +29,23 @@ public class User  implements UserDetails {
     @Column(name = "password")
     private String password;
 
+    @NotBlank(message = "Фамилия не может быть пустой")
+    @Column(name = "last_name")
+    private String lastName;
+
+    @NotNull(message = "Возраст не может быть пустым")
+    @Min(value = 0, message = "Возраст не может быть отрицательным")
+    @Column(name = "age")
+    private int age;
+
     public User() {}
 
-    public User(String name, String email, String password) {
+    public User(String name, String email, String password, String lastName, int age) {
         this.name = name;
         this.email = email;
         this.password = password;
+        this.lastName = lastName;
+        this.age = age;
     }
     public Long getId() {
         return id;
@@ -67,6 +76,14 @@ public class User  implements UserDetails {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public String getLastName() { return lastName; }
+
+    public void setLastName(String lastName) { this.lastName = lastName; }
+
+    public int getAge() { return age; }
+
+    public void setAge(int age) { this.age = age; }
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
